@@ -25,7 +25,7 @@ module "frontend" {
   vpc_id      = local.vpc_id
 }
 
-# MySQL allow connection from backend SG
+# Allow connection for My App
 resource "aws_security_group_rule" "mysql_backend" {
   type                     = "ingress"
   from_port                = var.mysql_port
@@ -51,4 +51,98 @@ resource "aws_security_group_rule" "frontend_internet" {
   protocol          = var.protocol
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = module.frontend.id
+}
+
+#SG for ansible and bastion server
+module "ansible" {
+  source = "git::https://github.com/MMahiketh/terraform-sg-module.git?ref=master"
+
+  project     = var.project
+  environment = var.environment
+  instance    = var.other_instances[0]
+  vpc_id      = local.vpc_id
+}
+
+module "bastion" {
+  source = "git::https://github.com/MMahiketh/terraform-sg-module.git?ref=master"
+
+  project     = var.project
+  environment = var.environment
+  instance    = var.other_instances[1]
+  vpc_id      = local.vpc_id
+}
+
+# Allow connection from ansible server
+resource "aws_security_group_rule" "mysql_ansible" {
+  type                     = "ingress"
+  from_port                = var.ssh_port
+  to_port                  = var.ssh_port
+  protocol                 = var.protocol
+  source_security_group_id = module.ansible.id
+  security_group_id        = module.mysql.id
+}
+
+resource "aws_security_group_rule" "backend_ansible" {
+  type                     = "ingress"
+  from_port                = var.ssh_port
+  to_port                  = var.ssh_port
+  protocol                 = var.protocol
+  source_security_group_id = module.ansible.id
+  security_group_id        = module.backend.id
+}
+
+resource "aws_security_group_rule" "frontend_ansible" {
+  type                     = "ingress"
+  from_port                = var.ssh_port
+  to_port                  = var.ssh_port
+  protocol                 = var.protocol
+  source_security_group_id = module.ansible.id
+  security_group_id        = module.frontend.id
+}
+
+# Allow connection from bastion server
+resource "aws_security_group_rule" "mysql_bastion" {
+  type                     = "ingress"
+  from_port                = var.ssh_port
+  to_port                  = var.ssh_port
+  protocol                 = var.protocol
+  source_security_group_id = module.bastion.id
+  security_group_id        = module.mysql.id
+}
+
+resource "aws_security_group_rule" "backend_bastion" {
+  type                     = "ingress"
+  from_port                = var.ssh_port
+  to_port                  = var.ssh_port
+  protocol                 = var.protocol
+  source_security_group_id = module.bastion.id
+  security_group_id        = module.backend.id
+}
+
+resource "aws_security_group_rule" "frontend_bastion" {
+  type                     = "ingress"
+  from_port                = var.ssh_port
+  to_port                  = var.ssh_port
+  protocol                 = var.protocol
+  source_security_group_id = module.bastion.id
+  security_group_id        = module.frontend.id
+}
+
+# Allow connection from internet to ansible and bastion
+resource "aws_security_group_rule" "ansible_internet" {
+  type              = "ingress"
+  from_port         = var.ssh_port
+  to_port           = var.ssh_port
+  protocol          = var.protocol
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.ansible.id
+}
+
+resource "aws_security_group_rule" "bastion_internet" {
+  type              = "ingress"
+  from_port         = var.ssh_port
+  to_port           = var.ssh_port
+  protocol          = var.protocol
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.bastion.id
 }
