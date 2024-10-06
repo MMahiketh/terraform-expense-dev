@@ -11,7 +11,7 @@ variable "instances" {
 }
 
 variable "other_instances" {
-  default = [ "ansible", "bastion" ]
+  default = ["ansible", "bastion"]
 }
 
 variable "mysql_port" {
