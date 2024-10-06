@@ -10,6 +10,6 @@ variable "vpc_id" {
   default = "vpc-004eaa275ecef58a0"
 }
 
-variable "instance" {
+variable "instances" {
   default = ["mysql", "backend", "frontend"]
 }
