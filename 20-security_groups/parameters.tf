@@ -1,3 +1,4 @@
+# Store security group ids in parameter store
 resource "aws_ssm_parameter" "mysql_sg_id" {
   name  = "${local.ssm_prefix}/${var.instances[0]}/sg_id"
   type  = "String"

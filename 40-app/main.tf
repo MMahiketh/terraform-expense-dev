@@ -1,11 +1,12 @@
+# Create mysql, backend, frontend ec2 instances
 module "mysql" {
-  source  = "terraform-aws-modules/ec2-instance/aws"
+  source = "terraform-aws-modules/ec2-instance/aws"
 
-  ami = local.ami_id
+  ami  = local.ami_id
   name = "${local.resource_name}-${var.instances[0]}"
 
   instance_type          = var.instance_type
-  vpc_security_group_ids = [ local.sg_ids.mysql ]
+  vpc_security_group_ids = [local.sg_ids.mysql]
   subnet_id              = local.subnet_ids[2]
 
   tags = merge(
@@ -16,13 +17,13 @@ module "mysql" {
 }
 
 module "backend" {
-  source  = "terraform-aws-modules/ec2-instance/aws"
+  source = "terraform-aws-modules/ec2-instance/aws"
 
-  ami = local.ami_id
+  ami  = local.ami_id
   name = "${local.resource_name}-${var.instances[1]}"
 
   instance_type          = var.instance_type
-  vpc_security_group_ids = [ local.sg_ids.backend ]
+  vpc_security_group_ids = [local.sg_ids.backend]
   subnet_id              = local.subnet_ids[1]
 
   tags = merge(
@@ -33,13 +34,13 @@ module "backend" {
 }
 
 module "frontend" {
-  source  = "terraform-aws-modules/ec2-instance/aws"
+  source = "terraform-aws-modules/ec2-instance/aws"
 
-  ami = local.ami_id
+  ami  = local.ami_id
   name = "${local.resource_name}-${var.instances[2]}"
 
   instance_type          = var.instance_type
-  vpc_security_group_ids = [ local.sg_ids.frontend ]
+  vpc_security_group_ids = [local.sg_ids.frontend]
   subnet_id              = local.subnet_ids[0]
 
   tags = merge(

@@ -1,7 +1,7 @@
 locals {
   resource_name = "${var.project}-${var.environment}"
-  ssm_prefix = "/${var.project}/${var.environment}"
-  
+  ssm_prefix    = "/${var.project}/${var.environment}"
+
   sg_ids = {
     ansible = data.aws_ssm_parameter.bastion_sg_id.value,
     bastion = data.aws_ssm_parameter.ansible_sg_id.value
@@ -13,7 +13,7 @@ locals {
     Terraform   = "true"
   }
 
-  ami_id = data.aws_ami.az_linux.id
-  
+  ami_id = data.aws_ami.join_devops_ami.id
+
   public_subnet_id = split(",", data.aws_ssm_parameter.public_subnet_ids.value)[0]
 }
