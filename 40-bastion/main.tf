@@ -7,7 +7,7 @@ module "ansible" {
   instance_type          = var.instance_type
   vpc_security_group_ids = [local.sg_ids.ansible]
   subnet_id              = local.public_subnet_id
-  user_data =file("ansible-setup.sh")
+  user_data              = file("ansible-setup.sh")
 
   tags = merge(
     local.common_tags,

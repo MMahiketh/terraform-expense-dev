@@ -35,6 +35,6 @@ variable "frontend_tags" {
 }
 
 variable "domain_name" {
-  type = string
+  type    = string
   default = "mahdo.site"
 }
