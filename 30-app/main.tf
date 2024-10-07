@@ -49,3 +49,41 @@ module "frontend" {
     var.frontend_tags
   )
 }
+
+# Route53 records
+module "records" {
+  source = "terraform-aws-modules/route53/aws//modules/records"
+
+  zone_name = var.domain_name
+
+  records = [
+    {
+      name            = var.instances[0]
+      type            = "A"
+      ttl             = 360
+      allow_overwrite = true
+      records         = [module.mysql.private_ip]
+    },
+    {
+      name            = var.instances[1]
+      type            = "A"
+      ttl             = 360
+      allow_overwrite = true
+      records         = [module.backend.private_ip]
+    },
+    {
+      name            = var.instances[2]
+      type            = "A"
+      ttl             = 360
+      allow_overwrite = true
+      records         = [module.frontend.private_ip]
+    },
+    {
+      name            = ""
+      type            = "A"
+      ttl             = 360
+      allow_overwrite = true
+      records         = [module.frontend.public_ip]
+    }
+  ]
+}

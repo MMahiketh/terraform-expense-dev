@@ -33,3 +33,8 @@ variable "frontend_tags" {
   type    = map(any)
   default = {}
 }
+
+variable "domain_name" {
+  type = string
+  default = "mahdo.site"
+}

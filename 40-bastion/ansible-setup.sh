@@ -5,7 +5,7 @@ cd /tmp/
 
 git clone --single-branch --branch terraform-ansible https://github.com/MMahiketh/ans-roles-proj.git
 
-cd ansible-roles-proj/
+cd ans-roles-proj/
 
 export ANSIBLE_HOST_KEY_CHECKING=False
 
